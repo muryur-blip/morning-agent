@@ -3,16 +3,25 @@ import smtplib
 from email.mime.text import MIMEText
 
 # -----------------------------
-# 1) API RAW verisini çek
+# 1) GoldAPI'den Altın & Gümüş Fiyatlarını Çek
 # -----------------------------
-def get_raw_api():
-    url = "https://api.metals.live/v1/spot"
+API_KEY = "YOUR_GOLDAPI_KEY"   # Buraya kendi key'ini yaz
+
+def get_price(metal):
+    url = f"https://www.goldapi.io/api/{metal}/USD"
+    headers = {
+        "x-access-token": API_KEY,
+        "Content-Type": "application/json"
+    }
 
     try:
-        data = requests.get(url, timeout=10).json()
-        return data
-    except Exception as e:
-        return {"error": str(e)}
+        data = requests.get(url, headers=headers, timeout=10).json()
+    except Exception:
+        return None
+
+    # Beklenen format:
+    # { "price": 1727.75, ... }
+    return data.get("price")
 
 
 # -----------------------------
@@ -36,9 +45,16 @@ def send_email(subject, body):
 # -----------------------------
 # 3) Ana Çalışma
 # -----------------------------
-data = get_raw_api()
+gold = get_price("XAU")
+silver = get_price("XAG")
 
-body = f"API RAW RESPONSE:\n\n{data}"
-send_email("Morning Agent – API RAW", body)
+if gold is None or silver is None:
+    body = "API error: GoldAPI fiyatları şu anda alınamadı."
+    send_email("Morning Agent – API Error", body)
+    print("API error – prices not available")
+    exit(0)
 
-print("Raw API response sent.")
+body = f"Gold (XAU/USD): {gold}\nSilver (XAG/USD): {silver}"
+send_email("Morning Agent – Prices", body)
+
+print("Email sent successfully.")
