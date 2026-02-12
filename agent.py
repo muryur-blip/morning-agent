@@ -2,10 +2,7 @@ import requests
 import smtplib
 from email.mime.text import MIMEText
 
-# -----------------------------
-# 1) GoldAPI'den Altın & Gümüş Fiyatlarını Çek
-# -----------------------------
-API_KEY = "YOUR_GOLDAPI_KEY"   # Buraya kendi key'ini yaz
+API_KEY = "goldapi-d1e919mljv85vj-io"
 
 def get_price(metal):
     url = f"https://www.goldapi.io/api/{metal}/USD"
@@ -19,14 +16,8 @@ def get_price(metal):
     except Exception:
         return None
 
-    # Beklenen format:
-    # { "price": 1727.75, ... }
     return data.get("price")
 
-
-# -----------------------------
-# 2) E‑mail Gönder
-# -----------------------------
 def send_email(subject, body):
     sender = "muryur@gmail.com"
     receiver = "muryur@gmail.com"
@@ -41,10 +32,6 @@ def send_email(subject, body):
         server.login(sender, password)
         server.sendmail(sender, receiver, msg.as_string())
 
-
-# -----------------------------
-# 3) Ana Çalışma
-# -----------------------------
 gold = get_price("XAU")
 silver = get_price("XAG")
 
