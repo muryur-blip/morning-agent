@@ -1,9 +1,9 @@
 name: Morning Agent
 
 on:
-  schedule:
-    - cron: "0 11 * * *"   # 06:00 New York = 11:00 UTC
   workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * *"
 
 jobs:
   run-agent:
