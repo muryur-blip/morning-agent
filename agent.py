@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 # -----------------------------
-# 1) Altın & Gümüş Fiyatlarını Çek (Yeni API)
+# 1) Altın & Gümüş Fiyatlarını Çek (Metals.live – format otomatik algılama)
 # -----------------------------
 def get_gold_silver():
     url = "https://api.metals.live/v1/spot"
@@ -13,27 +13,31 @@ def get_gold_silver():
     except Exception:
         return None, None
 
-    # Beklenen format:
-    # [
-    #   {"gold": 2025.34},
-    #   {"silver": 23.45}
-    # ]
-    try:
-        gold = data[0].get("gold")
-        silver = data[1].get("silver")
-    except Exception:
-        return None, None
+    # API bazen şöyle döner:
+    # [{"gold": 2025.34}, {"silver": 23.45}]
+    if isinstance(data, list):
+        gold = None
+        silver = None
 
-    return gold, silver
+        for item in data:
+            if isinstance(item, dict):
+                if "gold" in item:
+                    gold = item["gold"]
+                if "silver" in item:
+                    silver = item["silver"]
+
+        return gold, silver
+
+    return None, None
 
 
 # -----------------------------
 # 2) E‑mail Gönder
 # -----------------------------
 def send_email(subject, body):
-    sender = "muryur@gmail.com"
-    receiver = "muryur@gmail.com"
-    password = "pglttsrxplrbdczs"
+    sender = "YOUR_GMAIL@gmail.com"
+    receiver = "YOUR_GMAIL@gmail.com"
+    password = "YOUR_APP_PASSWORD"
 
     msg = MIMEText(body)
     msg["Subject"] = subject
