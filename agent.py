@@ -35,9 +35,9 @@ def get_gold_silver():
 # 2) E‑mail Gönder
 # -----------------------------
 def send_email(subject, body):
-    sender = "YOUR_GMAIL@gmail.com"
-    receiver = "YOUR_GMAIL@gmail.com"
-    password = "YOUR_APP_PASSWORD"
+    sender = "muryur@gmail.com"
+    receiver = "muryur@gmail.com"
+    password = "pglttsrxplrbdczs"
 
     msg = MIMEText(body)
     msg["Subject"] = subject
