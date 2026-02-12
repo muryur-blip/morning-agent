@@ -20,3 +20,40 @@ def get_gold_silver():
     silver = data["rates"].get("XAG")
 
     return gold, silver
+
+
+# -----------------------------
+# 2) E‑mail Gönder
+# -----------------------------
+def send_email(subject, body):
+    sender = "your_email@gmail.com"
+    receiver = "your_email@gmail.com"
+    password = "your_app_password"
+
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = sender
+    msg["To"] = receiver
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(sender, password)
+        server.sendmail(sender, receiver, msg.as_string())
+
+
+# -----------------------------
+# 3) Ana Çalışma
+# -----------------------------
+gold, silver = get_gold_silver()
+
+# API bozuksa bile workflow fail olmasın
+if gold is None or silver is None:
+    body = "API error: Altın/Gümüş fiyatları şu anda alınamadı."
+    send_email("Morning Agent – API Error", body)
+    print("API error – rates not available")
+    exit(0)
+
+# Normal durumda fiyatları gönder
+body = f"Gold (XAU): {gold}\nSilver (XAG): {silver}"
+send_email("Morning Agent – Prices", body)
+
+print("Email sent successfully.")
