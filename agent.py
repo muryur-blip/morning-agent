@@ -1,12 +1,22 @@
 import requests
+import smtplib
+from email.mime.text import MIMEText
 
+# -----------------------------
+# 1) Altın & Gümüş Fiyatlarını Çek
+# -----------------------------
 def get_gold_silver():
-    url = "https://metals-api.com/api/latest?access_key=DEMO&symbols=XAU,XAG"
-    data = requests.get(url).json()
-    gold = data["rates"]["XAU"]
-    silver = data["rates"]["XAG"]
-    return gold, silver
+    url = "https://metals-api.com/api/latest?access_key=DEMO"
+    try:
+        data = requests.get(url, timeout=10).json()
+    except Exception:
+        return None, None
 
-gold, silver = get_gold_silver()
-print("Altın:", gold)
-print("Gümüş:", silver)
+    # Eğer API bozuk veri döndürürse çökmeyi engelle
+    if "rates" not in data:
+        return None, None
+
+    gold = data["rates"].get("XAU")
+    silver = data["rates"].get("XAG")
+
+    return gold, silver
