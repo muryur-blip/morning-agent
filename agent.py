@@ -58,6 +58,34 @@ def trend(df):
     return "Pozitif trend" if ma50 > ma200 else "Zayıf trend"
 
 # -----------------------------
+# RSI(40) + RSI MA50 + HACİM SİNYALİ
+# -----------------------------
+def rsi_signal(df):
+    # RSI(40)
+    period = 40
+    delta = df["Close"].diff()
+    gain = delta.clip(lower=0).rolling(period).mean()
+    loss = -delta.clip(upper=0).rolling(period).mean()
+    rs = gain / loss
+    rsi40 = 100 - (100 / (1 + rs.iloc[-1]))
+
+    # RSI serisi (MA50 için)
+    rsi_series = 100 - (100 / (1 + (gain / loss)))
+    rsi_ma50 = rsi_series.rolling(50).mean().iloc[-1]
+
+    # Hacim
+    vol = df["Volume"].iloc[-1]
+    vol_avg = df["Volume"].rolling(20).mean().iloc[-1]
+
+    # Sinyal mantığı
+    if rsi40 < rsi_ma50 and rsi40 < 40 and vol > vol_avg * 1.2:
+        return f"ALIM SİNYALİ (RSI40={rsi40:.1f}, MA50={rsi_ma50:.1f}, Hacim yüksek)"
+    elif rsi40 > rsi_ma50 and rsi40 > 60 and vol > vol_avg * 1.2:
+        return f"SATIŞ SİNYALİ (RSI40={rsi40:.1f}, MA50={rsi_ma50:.1f}, Hacim yüksek)"
+    else:
+        return f"Sinyal yok (RSI40={rsi40:.1f}, MA50={rsi_ma50:.1f})"
+
+# -----------------------------
 # RAPOR OLUŞTURMA
 # -----------------------------
 report_lines = []
@@ -79,13 +107,15 @@ for symbol in assets:
     change = daily_change(df)
     rsi_val = rsi(df)
     tr = trend(df)
+    signal = rsi_signal(df)
 
     report_lines.append(
         f"{symbol}\n"
         f"  • Fiyat: {price:.2f}\n"
         f"  • Günlük değişim: {change:.2f}%\n"
-        f"  • RSI: {rsi_val:.1f}\n"
+        f"  • RSI(14): {rsi_val:.1f}\n"
         f"  • Trend: {tr}\n"
+        f"  • Sinyal: {signal}\n"
     )
 
 final_report = "\n".join(report_lines)
@@ -93,4 +123,5 @@ final_report = "\n".join(report_lines)
 # -----------------------------
 # E‑MAIL GÖNDER
 # -----------------------------
-send_email("Morning Agent – Çoklu Varlık Analizi", final_report)
+send_email("Morning Agent – Çoklu Varlık Analizi + Sinyaller", final_report)
+
