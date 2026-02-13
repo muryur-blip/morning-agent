@@ -19,6 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests
+             pip install yfinance
 
       - name: Run agent
         run: python agent.py
