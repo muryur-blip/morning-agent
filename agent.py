@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 
 API_KEY = "goldapi-d1e919mljv85vj-io"
 assets = ["SQQQ", "EWZ", "AEP", "PPTA", "AMZN", "FRO", "CGNX", "BNTX"]
-ef get_data(symbol):
+def get_data(symbol):
     ticker = yf.Ticker(symbol)
     df = ticker.history(period="200d")
     return df
