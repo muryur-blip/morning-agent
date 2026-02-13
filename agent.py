@@ -9,7 +9,7 @@ import os
 # -----------------------------
 # GOLDAPI – METAL FİYATLARI
 # -----------------------------
-GOLDAPI_KEY = "BURAYA_KENDİ_KEYİNİ_YAZ"
+GOLDAPI_KEY = "goldapi-dle919mljv85vj-io"
 
 def get_metal_price(metal):
     url = f"https://www.goldapi.io/api/{metal}/USD"
@@ -22,9 +22,9 @@ def get_metal_price(metal):
 # E‑MAIL GÖNDERME
 # -----------------------------
 def send_email(subject, body):
-    sender = "YOUR_EMAIL"
-    password = "YOUR_APP_PASSWORD"
-    receiver = "YOUR_EMAIL"
+    sender = "muryur@gmail.com"
+    password = "pglttsrxplrbdczs"
+    receiver = "muryur@gmail.com"
 
     msg = MIMEText(body)
     msg["Subject"] = subject
