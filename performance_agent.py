@@ -10,9 +10,9 @@ LOG_FILE = "log.csv"
 # E‑MAIL GÖNDERME
 # -----------------------------
 def send_email(subject, body):
-    sender = "muryur@gmail.com"
-    password = "pglttsrxplrbdczs"
-    receiver = "muryur@gmail.com"
+    sender = os.getenv("EMAIL")
+    password = os.getenv("EMAIL_PASSWORD")
+    receiver = os.getenv("EMAIL")
 
     msg = MIMEText(body)
     msg["Subject"] = subject
